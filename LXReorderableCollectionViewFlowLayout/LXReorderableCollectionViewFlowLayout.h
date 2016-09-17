@@ -21,7 +21,13 @@
 @protocol LXReorderableCollectionViewDataSource <UICollectionViewDataSource>
 
 @optional
-
+/**
+ *  collectionView 代理方法
+ *
+ *  @param collectionView
+ *  @param fromIndexPath
+ *  @param toIndexPath
+ */
 - (void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath;
 - (void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath didMoveToIndexPath:(NSIndexPath *)toIndexPath;
 
@@ -32,7 +38,13 @@
 
 @protocol LXReorderableCollectionViewDelegateFlowLayout <UICollectionViewDelegateFlowLayout>
 @optional
-
+/**
+ *  collectionView 代理方法
+ *
+ *  @param collectionView
+ *  @param collectionViewLayout
+ *  @param indexPath
+ */
 - (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout willBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath;
 - (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath;
 - (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout willEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath;

@@ -50,15 +50,17 @@ static NSString * const kLXCollectionViewKeyPath = @"collectionView";
 @implementation UICollectionViewCell (LXReorderableCollectionViewFlowLayout)
 
 - (UIView *)LX_snapshotView {
-    if ([self respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)]) {
-        return [self snapshotViewAfterScreenUpdates:YES];
-    } else {
+    
+    //FIX：iOS10 snapshotViewAfterScreenUpdates not work
+//    if ([self respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)]) {
+//        return [self snapshotViewAfterScreenUpdates:YES];
+//    } else {
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.isOpaque, 0.0f);
         [self.layer renderInContext:UIGraphicsGetCurrentContext()];
         UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return [[UIImageView alloc] initWithImage:image];
-    }
+//    }
 }
 
 @end
@@ -171,6 +173,21 @@ static NSString * const kLXCollectionViewKeyPath = @"collectionView";
 
 - (void)invalidateLayoutIfNecessary {
     NSIndexPath *newIndexPath = [self.collectionView indexPathForItemAtPoint:self.currentView.center];
+    
+    //****** 使支持拖拽到 section 尾部也生效
+    if (newIndexPath == nil) {
+        CGPoint leftPoint = CGPointMake(CGRectGetWidth(self.currentView.frame) * 0.5, self.currentView.center.y);
+        NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:leftPoint];
+        NSInteger count = [self.collectionView numberOfItemsInSection:indexPath.section];
+        
+        if (self.selectedItemIndexPath.section == indexPath.section) {
+            newIndexPath = [NSIndexPath indexPathForRow:count-1 inSection:indexPath.section];
+        } else {
+            newIndexPath = [NSIndexPath indexPathForRow:count inSection:indexPath.section];
+        }
+    }
+    //*******
+    
     NSIndexPath *previousIndexPath = self.selectedItemIndexPath;
     
     if ((newIndexPath == nil) || [newIndexPath isEqual:previousIndexPath]) {
